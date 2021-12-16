@@ -1,0 +1,21 @@
+{
+  "managers": [
+    {
+      "name": "John Doe",
+      "bsc": "0x97D2ba66dB0c00e7946bDeDBe9b8C91120D53230",
+      "ronin": "ronin:b300f9f640a65abdb98d0e807fd1127321bbbfe0"
+    }
+  ],
+  "scholars": [
+    {
+      "name": "Scholar 1",
+      "bsc": "0xa9BE11752B38E0b1d42e9790eCe10679F83FB6Fe",
+      "ronin": "ronin:b300f9f640a65abdb98d0e807fd1127321bbbfe0"
+    },
+    {
+      "name": "Scholar 2",
+      "bsc": "0xdF430a1fc4e0e363878238f8701894Ea1eA8a8D3",
+      "ronin": "ronin:39071a1913be5936e9c254ab00b93276e9ed7768"
+    }
+  ]
+}
