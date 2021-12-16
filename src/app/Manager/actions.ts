@@ -2,7 +2,11 @@ import { AppThunk } from 'app/store';
 import { find } from 'lodash';
 
 import {
-  setClaimDetails, setClaimStep, setScholars, setSelectedScholar, setSlpPrice,
+  setClaimDetails,
+  setClaimStep,
+  setScholars,
+  setSelectedScholar,
+  setSlpPrice,
 } from '.';
 import { claimSlpApi, scholarListApi, slpPriceApi } from './api';
 
@@ -19,7 +23,6 @@ export const getScholarList = (): AppThunk => async (dispatch) => {
 
 export const getSlpPrice = (): AppThunk => async (dispatch) => {
   const result = await slpPriceApi();
-  console.log(result);
   dispatch(setSlpPrice(result['smooth-love-potion'].php));
 };
 
@@ -33,15 +36,24 @@ export const claimSlp = (roninId: string, setIsLoading?: (value: boolean) => voi
     await getSlpPrice();
     const result = await claimSlpApi(roninId);
 
-    dispatch(setClaimDetails({
-      slp: result.claimed_slp,
-      id: result.claim_trans_id,
-      binanceId: result.binance_trans_id,
-    }));
+    dispatch(
+      setClaimDetails({
+        slp: result.claimed_slp,
+        id: result.claim_trans_id,
+        binanceId: result.binance_trans_id,
+      }),
+    );
     dispatch(setClaimStep(1));
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    dispatch(
+      setClaimDetails({
+        slp: error.response.data.data.claimed_slp,
+        id: error.response.data.data.claim_trans_id,
+        binanceId: error.response.data.data.binance_trans_id,
+      }),
+    );
+    dispatch(setClaimStep(1));
   } finally {
-    // setIsLoading?.call(null, false);
+    setIsLoading?.call(null, false);
   }
 };

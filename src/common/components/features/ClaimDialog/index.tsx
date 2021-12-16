@@ -19,6 +19,8 @@ import { calculateSlpPhp } from 'common/utils/slp';
 
 import moment from 'moment';
 import { capitalize } from 'lodash';
+import { setClaimStep } from 'app/Manager';
+import { useEthers } from '@usedapp/core';
 import ClaimAccordion from './Accordion';
 import DetailsScholar from './details/scholar';
 import DetailsClaim from './details/claim';
@@ -37,9 +39,15 @@ const ClaimDialog: React.FC<ClaimDialogProps> = ({ loading, open, onClose }) => 
   const {
     slpPrice, claimStep, claimDetails, selectedScholar,
   } = useAppSelector((state) => state.manager);
+  const { account } = useEthers();
+
+  const handleDone = React.useCallback(() => {
+    onClose();
+    dispatch(setClaimStep(0));
+  }, [dispatch, onClose]);
 
   return (
-    <Dialog open={open} fullWidth maxWidth="sm" scroll="body" onClose={onClose}>
+    <Dialog disableEscapeKeyDown open={open} fullWidth maxWidth="sm" scroll="body">
       <DialogTitle className={classes.title}>
         Claim SLP
         <IconButton size="small" onClick={onClose} disabled={loading}>
@@ -57,7 +65,7 @@ const ClaimDialog: React.FC<ClaimDialogProps> = ({ loading, open, onClose }) => 
         {claimStep === 1 && claimDetails !== undefined && claimDetails.slp < 1 && (
           <div className="error">
             <CancelOutlinedIcon color="error" fontSize="large" />
-            <Typography color="error" variant="h6">Claim Successful!</Typography>
+            <Typography color="error" variant="h6">Claim failed!</Typography>
           </div>
         )}
         <div className="pricing">
@@ -100,7 +108,7 @@ const ClaimDialog: React.FC<ClaimDialogProps> = ({ loading, open, onClose }) => 
                 method={capitalize(selectedScholar?.method)}
                 number="N/A"
                 ronin={selectedScholar?.ronin_id}
-                binance="N/A"
+                binance={account !== null ? account : 'N/A'}
               />
             </ClaimAccordion>
           ) : (
@@ -124,6 +132,7 @@ const ClaimDialog: React.FC<ClaimDialogProps> = ({ loading, open, onClose }) => 
           color="primary"
           className="claimBtn"
           disabled={loading}
+          onClick={handleDone}
         >
           <span className={clsx({ 'dots-loading': loading })}>{claimStep === 0 ? 'Claiming SLP' : 'Done'}</span>
         </Button>

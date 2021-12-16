@@ -13,13 +13,21 @@ const Auth = ({ children }: any) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { account } = useEthers();
+  const { account, library } = useEthers();
   const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 1000);
 
     return () => clearTimeout(timeout);
+  }, []);
+
+  React.useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', () => {
+        window.location.reload();
+      });
+    }
   }, []);
 
   React.useEffect(() => {
